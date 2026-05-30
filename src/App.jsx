@@ -48,6 +48,78 @@ function App() {
     return () => window.removeEventListener('scroll', updateHeader);
   }, []);
 
+  useEffect(() => {
+    const revealElements = Array.from(document.querySelectorAll('[data-reveal]'));
+
+    if (!('IntersectionObserver' in window)) {
+      revealElements.forEach((element) => element.classList.add('is-visible'));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px -10% 0px',
+        threshold: 0.14,
+      },
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    let frameId = 0;
+
+    const updateParallax = () => {
+      frameId = 0;
+      const viewportCenter = window.innerHeight / 2;
+
+      root.style.setProperty('--bg-shift', `${window.scrollY * -0.035}px`);
+
+      document.querySelectorAll('[data-parallax]').forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        const speed = Number(element.getAttribute('data-parallax-speed') || -28);
+        const distance = (rect.top + rect.height / 2 - viewportCenter) / window.innerHeight;
+        element.style.setProperty('--parallax-y', `${distance * speed}px`);
+      });
+    };
+
+    const requestParallax = () => {
+      if (!frameId) {
+        frameId = window.requestAnimationFrame(updateParallax);
+      }
+    };
+
+    const updatePointer = (event) => {
+      root.style.setProperty('--mouse-x', `${event.clientX}px`);
+      root.style.setProperty('--mouse-y', `${event.clientY}px`);
+    };
+
+    updateParallax();
+    window.addEventListener('scroll', requestParallax, { passive: true });
+    window.addEventListener('resize', requestParallax);
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener('scroll', requestParallax);
+      window.removeEventListener('resize', requestParallax);
+      window.removeEventListener('pointermove', updatePointer);
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden text-stone-100">
       <div className="site-grid fixed inset-0 z-0" />
@@ -110,7 +182,7 @@ function Hero() {
   return (
     <section className="hero-shell relative min-h-screen px-5 lg:px-8">
       <div className="hero-layout hero-layout-centered mx-auto flex max-w-5xl items-center justify-center">
-        <div className="hero-copy-block hero-copy-block-centered">
+        <div className="hero-copy-block hero-copy-block-centered" data-reveal="scale">
           <h1 className="hero-title font-display font-black text-white">
             <span data-title-text="Software Engineer">Software Engineer</span>
           </h1>
@@ -122,12 +194,12 @@ function Hero() {
           </p>
         </div>
       </div>
-      <a href="#about" className="scroll-cue" aria-label="Scroll to about section">
+      <a href="#about" className="scroll-cue" aria-label="Scroll to about section" data-reveal="fade-up">
         <span className="scroll-cue-dot" aria-hidden="true" />
         <span className="scroll-cue-label">scroll down</span>
         <ArrowDown className="scroll-cue-arrow" aria-hidden="true" />
       </a>
-      <div className="social-dock">
+      <div className="social-dock" data-reveal="fade-left">
         {heroSocials.map(({ label, href, Icon }) => (
           <a key={label} href={href} aria-label={label} title={label}>
             <Icon aria-hidden="true" />
@@ -143,7 +215,7 @@ function About() {
   return (
     <section id="about" className="section-screen px-5 lg:px-8">
       <div className="about-split mx-auto max-w-7xl">
-        <div className="about-headline">
+        <div className="about-headline" data-reveal="fade-right">
           <p className="text-xs font-black uppercase text-accent">About Me</p>
           <h2 className="mt-4 font-display font-black leading-none text-white">
             <span>Hi, I&apos;m</span>
@@ -151,7 +223,7 @@ function About() {
           </h2>
         </div>
 
-        <div className="about-copy-block">
+        <div className="about-copy-block" data-reveal="fade-left">
           <p>
             I&apos;m a 20-year-old aspiring software engineer driven by a restless curiosity to
             uncover how systems operate beneath the surface, dissect why things fail, and
@@ -204,7 +276,7 @@ function Projects() {
   return (
     <section id="projects" className="projects-section px-5 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="section-heading projects-heading mb-16 max-w-3xl">
+        <div className="section-heading projects-heading mb-16 max-w-3xl" data-reveal="fade-up">
           <p className="text-xs font-black uppercase text-accent">Projects</p>
           <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
             Five continuous builds shaped like product demos.
@@ -216,8 +288,14 @@ function Projects() {
             <article
               key={project.title}
               className={`project-showcase ${index % 2 === 1 ? 'project-showcase-reverse' : ''}`}
+              data-reveal="fade-up"
+              style={{ '--reveal-delay': `${Math.min(index * 80, 240)}ms` }}
             >
-              <div className="project-media">
+              <div
+                className="project-media"
+                data-parallax
+                data-parallax-speed={index % 2 === 1 ? 26 : -26}
+              >
                 <div className="project-video-frame" aria-label={`${project.title} project preview`}>
                   <div className="project-video-screen">
                     <div className="project-video-topbar">
@@ -374,7 +452,12 @@ function Skills() {
     <Section id="skills" eyebrow="Skills" title="A focused engineering stack for building reliable applications.">
       <div className="timeline-panel">
         {skills.map((skillGroup, index) => (
-          <article key={skillGroup.group} className="timeline-row">
+          <article
+            key={skillGroup.group}
+            className="timeline-row"
+            data-reveal="fade-up"
+            style={{ '--reveal-delay': `${index * 80}ms` }}
+          >
             <div className="timeline-index">{String(index + 1).padStart(2, '0')}</div>
             <div>
               <p className="text-sm font-black uppercase text-accent">Core Skill</p>
@@ -397,7 +480,7 @@ function Skills() {
 function Contact() {
   return (
     <section id="contact" className="section-screen px-5 lg:px-8">
-      <div className="contact-panel mx-auto max-w-7xl">
+      <div className="contact-panel mx-auto max-w-7xl" data-reveal="scale">
         <div className="max-w-2xl">
           <p className="text-xs font-black uppercase text-accent">Contact</p>
           <h2 className="mt-4 font-display text-4xl font-black text-white sm:text-5xl">
@@ -434,7 +517,7 @@ function Section({ id, eyebrow, title, children }) {
   return (
     <section id={id} className="section-screen px-5 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="section-heading mb-10 max-w-3xl">
+        <div className="section-heading mb-10 max-w-3xl" data-reveal="fade-up">
           <p className="text-xs font-black uppercase text-accent">{eyebrow}</p>
           <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
             {title}
