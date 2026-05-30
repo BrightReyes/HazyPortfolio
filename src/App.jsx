@@ -178,6 +178,29 @@ function About() {
 }
 
 function Projects() {
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    if (!selectedProject) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedProject(null);
+      }
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedProject]);
+
   return (
     <section id="projects" className="projects-section px-5 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -203,7 +226,7 @@ function Projects() {
                         <span />
                         <span />
                       </div>
-                      <span>{project.title}.demo</span>
+                      <span>{project.title} preview</span>
                     </div>
 
                     <div className="project-preview-ui">
@@ -263,35 +286,86 @@ function Projects() {
                 <h3 className="font-display font-black text-white">{project.title}</h3>
                 <p className="project-description">{project.description}</p>
 
-                <div className="project-role-block">
-                  <span>Role</span>
-                  <strong>{project.role}</strong>
-                </div>
-
-                <div className="project-stack-list">
-                  {project.stack.map((item) => (
-                    <span key={item} className="tech-pill">
-                      {item}
-                    </span>
-                  ))}
-                </div>
-
                 <div className="project-actions">
-                  <a href={project.links.code} className="project-action" aria-label={`${project.title} code`}>
-                    <Github className="h-4 w-4" />
-                    Code
-                  </a>
-                  <a href={project.links.demo} className="project-action" aria-label={`${project.title} demo`}>
+                  <button
+                    type="button"
+                    className="project-explore-button"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    Explore full project
                     <ArrowUpRight className="h-4 w-4" />
-                    Demo
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>
           ))}
         </div>
       </div>
+
+      {selectedProject && (
+        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
     </section>
+  );
+}
+
+function ProjectModal({ project, onClose }) {
+  return (
+    <div className="project-modal-backdrop" role="presentation" onMouseDown={onClose}>
+      <div
+        className="project-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${project.title} project details`}
+        onMouseDown={(event) => event.stopPropagation()}
+      >
+        <button type="button" className="project-modal-close" aria-label="Close project details" onClick={onClose}>
+          <X className="h-5 w-5" />
+        </button>
+
+        <div className="project-modal-hero">
+          <p>{project.type}</p>
+          <h2 className="font-display font-black text-white">{project.title}</h2>
+          <span>{project.status} / {project.year}</span>
+        </div>
+
+        <div className="project-modal-body">
+          <section className="project-modal-section project-modal-overview">
+            <h3>Project Overview</h3>
+            <p>{project.description}</p>
+            <p>
+              Add the full project story here later: the problem, users, core workflow, design
+              decisions, important features, challenges, and final outcome.
+            </p>
+          </section>
+
+          <section className="project-modal-section">
+            <h3>Role</h3>
+            <p>{project.role || 'Project role placeholder'}</p>
+          </section>
+
+          <section className="project-modal-section">
+            <h3>Tech Stack</h3>
+            <div className="project-modal-stack">
+              {project.stack.map((item) => (
+                <span key={item} className="tech-pill">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </section>
+
+          <section className="project-modal-section">
+            <h3>Key Features</h3>
+            <ul>
+              <li>Feature detail placeholder</li>
+              <li>Technical implementation placeholder</li>
+              <li>Result or impact placeholder</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
   );
 }
 
