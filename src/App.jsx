@@ -1,19 +1,17 @@
 import {
   ArrowDown,
   ArrowUpRight,
-  Braces,
-  Cpu,
+  Download,
   Github,
   GraduationCap,
   Linkedin,
   Mail,
   Menu,
-  Network,
-  ShieldCheck,
+  Play,
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { focusAreas, profile, projects, skills } from './data/portfolio';
+import { profile, projects, skills } from './data/portfolio';
 
 const navItems = ['About', 'Projects', 'Skills', 'Contact'];
 
@@ -34,11 +32,6 @@ const heroSocials = [
     Icon: Mail,
   },
 ];
-const iconMap = {
-  'Frontend Engineering': Braces,
-  'Backend & APIs': Network,
-  'Software Quality': ShieldCheck,
-};
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -148,46 +141,134 @@ function Hero() {
 
 function About() {
   return (
-    <Section id="about" eyebrow="About" title="A focused software engineering profile built around clean systems.">
-      <div className="grid gap-4 lg:grid-cols-3">
-        {focusAreas.map((area) => {
-          const Icon = iconMap[area.title] || Cpu;
-          return (
-            <article key={area.title} className="feature-card">
-              <Icon className="h-7 w-7 text-accent" />
-              <h3 className="mt-6 font-display text-2xl font-black text-white">{area.title}</h3>
-              <p className="mt-3 leading-7 text-stone-400">{area.description}</p>
-            </article>
-          );
-        })}
+    <section id="about" className="section-screen px-5 lg:px-8">
+      <div className="about-split mx-auto max-w-7xl">
+        <div className="about-headline">
+          <p className="text-xs font-black uppercase text-accent">About Me</p>
+          <h2 className="mt-4 font-display font-black leading-none text-white">
+            <span>Hi, I&apos;m</span>
+            <span className="about-name">Hazy.</span>
+          </h2>
+        </div>
+
+        <div className="about-copy-block">
+          <p>
+            I&apos;m a 20-year-old aspiring software engineer driven by a restless curiosity to
+            uncover how systems operate beneath the surface, dissect why things fail, and
+            continuously refine performance.
+          </p>
+          <p className="about-quote">
+            &quot;I bring this exact engineering focus, adaptability, and natural curiosity to every
+            system I build, proving that great software is engineered rather than just written.&quot;
+          </p>
+          <div className="about-actions">
+            <a href="#contact" className="about-action-button about-action-primary">
+              <Mail className="h-4 w-4" aria-hidden="true" />
+              Get in touch
+            </a>
+            <a href={profile.resumeUrl} className="about-action-button about-action-secondary" download>
+              <Download className="h-4 w-4" aria-hidden="true" />
+              Download resume
+            </a>
+          </div>
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
 function Projects() {
   return (
-    <Section id="projects" eyebrow="Projects" title="Software engineering projects built around real product problems.">
-      <div className="timeline-panel project-list">
-        {projects.map((project, index) => (
-          <article key={project.title} className="timeline-row project-row">
-            <div className="timeline-index">{String(index + 1).padStart(2, '0')}</div>
-            <div className="project-content">
-              <div className="project-row-top">
-                <div>
-                  <p className="text-sm font-black uppercase text-accent">{project.type}</p>
-                  <h3 className="mt-2 font-display text-2xl font-black text-white">{project.title}</h3>
-                </div>
-                <div className="project-meta">
-                  <span className="status-chip">{project.status}</span>
-                  <span className="project-year">{project.year}</span>
+    <section id="projects" className="projects-section px-5 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="section-heading projects-heading mb-16 max-w-3xl">
+          <p className="text-xs font-black uppercase text-accent">Projects</p>
+          <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
+            Five continuous builds shaped like product demos.
+          </h2>
+        </div>
+
+        <div className="project-showcase-list">
+          {projects.map((project, index) => (
+            <article
+              key={project.title}
+              className={`project-showcase ${index % 2 === 1 ? 'project-showcase-reverse' : ''}`}
+            >
+              <div className="project-media">
+                <div className="project-video-frame" aria-label={`${project.title} project preview`}>
+                  <div className="project-video-screen">
+                    <div className="project-video-topbar">
+                      <div className="video-dots" aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                      <span>{project.title}.demo</span>
+                    </div>
+
+                    <div className="project-preview-ui">
+                      <aside className="preview-sidebar">
+                        <span className="preview-logo">{project.title.slice(0, 2)}</span>
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                      </aside>
+
+                      <div className="preview-main">
+                        <div className="preview-hero-bar">
+                          <div>
+                            <span className="preview-kicker">{project.type}</span>
+                            <strong>{project.title}</strong>
+                          </div>
+                          <span className="preview-status">{project.status}</span>
+                        </div>
+
+                        <div className="preview-grid">
+                          <div className="preview-panel preview-panel-large">
+                            <span />
+                            <span />
+                            <span />
+                            <span />
+                          </div>
+                          <div className="preview-panel">
+                            <span />
+                            <span />
+                            <span />
+                          </div>
+                          <div className="preview-panel">
+                            <span />
+                            <span />
+                            <span />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="project-video-control" aria-hidden="true">
+                      <span className="project-play-button">
+                        <Play className="h-4 w-4" />
+                      </span>
+                      <span className="project-video-progress">
+                        <span />
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <p className="mt-4 max-w-3xl leading-7 text-stone-400">{project.description}</p>
+              <div className="project-copy">
+                <p className="project-number">{String(index + 1).padStart(2, '0')}</p>
+                <p className="project-type">{project.type}</p>
+                <h3 className="font-display font-black text-white">{project.title}</h3>
+                <p className="project-description">{project.description}</p>
 
-              <div className="project-row-bottom">
-                <div className="flex flex-wrap gap-2">
+                <div className="project-role-block">
+                  <span>Role</span>
+                  <strong>{project.role}</strong>
+                </div>
+
+                <div className="project-stack-list">
                   {project.stack.map((item) => (
                     <span key={item} className="tech-pill">
                       {item}
@@ -206,11 +287,11 @@ function Projects() {
                   </a>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }
 
@@ -241,7 +322,7 @@ function Skills() {
 
 function Contact() {
   return (
-    <section id="contact" className="px-5 py-24 lg:px-8">
+    <section id="contact" className="section-screen px-5 lg:px-8">
       <div className="contact-panel mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <p className="text-xs font-black uppercase text-accent">Contact</p>
@@ -277,7 +358,7 @@ function Contact() {
 
 function Section({ id, eyebrow, title, children }) {
   return (
-    <section id={id} className="px-5 py-20 lg:px-8">
+    <section id={id} className="section-screen px-5 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="section-heading mb-10 max-w-3xl">
           <p className="text-xs font-black uppercase text-accent">{eyebrow}</p>
