@@ -60,6 +60,78 @@ function App() {
     return () => window.removeEventListener('scroll', updateHeader);
   }, []);
 
+  useEffect(() => {
+    const revealElements = Array.from(document.querySelectorAll('[data-reveal]'));
+
+    if (!('IntersectionObserver' in window)) {
+      revealElements.forEach((element) => element.classList.add('is-visible'));
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px -10% 0px',
+        threshold: 0.14,
+      },
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    let frameId = 0;
+
+    const updateParallax = () => {
+      frameId = 0;
+      const viewportCenter = window.innerHeight / 2;
+
+      root.style.setProperty('--bg-shift', `${window.scrollY * -0.035}px`);
+
+      document.querySelectorAll('[data-parallax]').forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        const speed = Number(element.getAttribute('data-parallax-speed') || -28);
+        const distance = (rect.top + rect.height / 2 - viewportCenter) / window.innerHeight;
+        element.style.setProperty('--parallax-y', `${distance * speed}px`);
+      });
+    };
+
+    const requestParallax = () => {
+      if (!frameId) {
+        frameId = window.requestAnimationFrame(updateParallax);
+      }
+    };
+
+    const updatePointer = (event) => {
+      root.style.setProperty('--mouse-x', `${event.clientX}px`);
+      root.style.setProperty('--mouse-y', `${event.clientY}px`);
+    };
+
+    updateParallax();
+    window.addEventListener('scroll', requestParallax, { passive: true });
+    window.addEventListener('resize', requestParallax);
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener('scroll', requestParallax);
+      window.removeEventListener('resize', requestParallax);
+      window.removeEventListener('pointermove', updatePointer);
+    };
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden text-stone-100">
       <motion.div 
@@ -614,7 +686,12 @@ function Skills() {
     <Section id="skills" eyebrow="Skills" title="A focused engineering stack for building reliable applications.">
       <div className="timeline-panel">
         {skills.map((skillGroup, index) => (
-          <article key={skillGroup.group} className="timeline-row">
+          <article
+            key={skillGroup.group}
+            className="timeline-row"
+            data-reveal="fade-up"
+            style={{ '--reveal-delay': `${index * 80}ms` }}
+          >
             <div className="timeline-index">{String(index + 1).padStart(2, '0')}</div>
             <div>
               <p className="text-sm font-black uppercase text-accent">Core Skill</p>
