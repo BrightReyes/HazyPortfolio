@@ -11,7 +11,19 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { profile, projects, skills } from './data/portfolio';
+
+const revealVariants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 1.4, ease: [0.16, 1, 0.3, 1] }
+  }
+};
+
+
 
 const navItems = ['About', 'Projects', 'Skills', 'Contact'];
 
@@ -50,9 +62,27 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden text-stone-100">
-      <div className="site-grid fixed inset-0 z-0" />
+      <motion.div 
+        className="site-grid fixed inset-0 z-0" 
+        initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+        animate={{ clipPath: 'circle(150% at 50% 50%)' }}
+        transition={{ delay: 2.5, duration: 2.0, ease: 'easeInOut' }}
+      />
+      
+      {/* Light Burst Shockwave */}
+      <motion.div 
+        className="fixed inset-0 z-0 pointer-events-none bg-white/10" 
+        initial={{ clipPath: 'circle(0% at 50% 50%)', opacity: 0 }}
+        animate={{ clipPath: 'circle(50% at 50% 50%)', opacity: [0, 0.5, 0] }}
+        transition={{ duration: 2.0, delay: 2.5, ease: 'easeOut' }}
+      />
 
-      <header className={`site-header ${headerScrolled ? 'site-header-scrolled' : ''}`}>
+      <motion.header 
+        className={`site-header ${headerScrolled ? 'site-header-scrolled' : ''}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3.5, duration: 1.5 }}
+      >
         <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
           <a href="#home" className="brand-lockup group">
             <span className="brand-dot" />
@@ -93,7 +123,7 @@ function App() {
             </div>
           </nav>
         )}
-      </header>
+      </motion.header>
 
       <main id="home" className="relative z-10">
         <Hero />
@@ -109,32 +139,91 @@ function App() {
 function Hero() {
   return (
     <section className="hero-shell relative min-h-screen px-5 lg:px-8">
-      <div className="hero-layout hero-layout-centered mx-auto flex max-w-5xl items-center justify-center">
+      <motion.div
+        className="hero-layout hero-layout-centered mx-auto flex max-w-5xl items-center justify-center"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.1 }}
+        variants={revealVariants}
+      >
         <div className="hero-copy-block hero-copy-block-centered">
-          <h1 className="hero-title font-display font-black text-white">
+          <motion.h1 
+            className="hero-title font-display font-black text-white"
+            initial={{ 
+              opacity: 0, 
+              scale: 1.05, 
+              filter: 'blur(8px)', 
+              clipPath: 'inset(0 50% 0 50%)' 
+            }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              filter: 'blur(0px)', 
+              clipPath: 'inset(0 0% 0 0%)' 
+            }}
+            transition={{ 
+              opacity: { delay: 1.5, duration: 0.2 },
+              scale: { delay: 1.5, duration: 2.5, ease: 'easeOut' },
+              filter: { delay: 1.5, duration: 1.5, ease: 'easeOut' },
+              clipPath: { delay: 1.5, duration: 1.0, ease: 'easeInOut' }
+            }}
+          >
             <span data-title-text="Software Engineer">Software Engineer</span>
-          </h1>
+          </motion.h1>
 
-          <p className="hero-copy hero-copy-hud mt-7 leading-6">
+          <motion.p 
+            className="hero-copy hero-copy-hud mt-7 leading-6"
+            initial={{ opacity: 0, y: -15, filter: 'blur(5px)', clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', clipPath: 'inset(0 0 0% 0)' }}
+            transition={{ 
+              opacity: { delay: 3.0, duration: 0.8 },
+              y: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
+              filter: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
+              clipPath: { delay: 3.0, duration: 2.0, ease: 'easeInOut' }
+            }}
+          >
             <span className="hud-corner hud-corner-tl" aria-hidden="true" />
             <span className="hud-corner hud-corner-br" aria-hidden="true" />
             Always asking how it works, why it breaks, and how to make it better.
-          </p>
+          </motion.p>
         </div>
-      </div>
-      <a href="#about" className="scroll-cue" aria-label="Scroll to about section">
+      </motion.div>
+      
+      <motion.a 
+        href="#about" 
+        className="scroll-cue" 
+        aria-label="Scroll to about section"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3.5, duration: 1.0 }}
+      >
         <span className="scroll-cue-dot" aria-hidden="true" />
         <span className="scroll-cue-label">scroll down</span>
         <ArrowDown className="scroll-cue-arrow" aria-hidden="true" />
-      </a>
-      <div className="social-dock">
+      </motion.a>
+      
+      <motion.div 
+        className="social-dock"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3.2, duration: 1.0 }}
+      >
         {heroSocials.map(({ label, href, Icon }) => (
           <a key={label} href={href} aria-label={label} title={label}>
             <Icon aria-hidden="true" />
             <span className="sr-only">{label}</span>
           </a>
         ))}
-      </div>
+      </motion.div>
+
+      {/* Intro Spark */}
+      <motion.div
+        className="intro-spark"
+        initial={{ x: '-50%', y: '100vh', opacity: 1, scaleY: 2 }}
+        animate={{ x: '-50%', y: '50vh', opacity: [1, 1, 0], scaleY: [2, 1, 0] }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
+        style={{ top: 0, bottom: 'auto' }}
+      />
     </section>
   );
 }
@@ -142,38 +231,106 @@ function Hero() {
 function About() {
   return (
     <section id="about" className="section-screen px-5 lg:px-8">
-      <div className="about-split mx-auto max-w-7xl">
+      <motion.div
+        className="about-split mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.15 }}
+        variants={revealVariants}
+      >
         <div className="about-headline">
           <p className="text-xs font-black uppercase text-accent">About Me</p>
-          <h2 className="mt-4 font-display font-black leading-none text-white">
-            <span>Hi, I&apos;m</span>
-            <span className="about-name">Hazy.</span>
-          </h2>
+          <motion.h2
+            className="mt-4 font-display font-black leading-none text-white"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.15 }}
+            variants={{
+              hidden: { opacity: 1 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.6 } }
+            }}
+          >
+            <span>
+              <motion.span variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1 } } }} style={{ display: 'inline-block', marginRight: '0.25em' }}>Hi,</motion.span>
+              <motion.span variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1 } } }} style={{ display: 'inline-block' }}>I&apos;m</motion.span>
+            </span>
+            <motion.span variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1 } } }} className="about-name" style={{ display: 'block' }}>Hazy.</motion.span>
+          </motion.h2>
         </div>
 
         <div className="about-copy-block">
-          <p>
-            I&apos;m a 20-year-old aspiring software engineer driven by a restless curiosity to
-            uncover how systems operate beneath the surface, dissect why things fail, and
-            continuously refine performance.
-          </p>
-          <p className="about-quote">
-            &quot;I bring this exact engineering focus, adaptability, and natural curiosity to every
-            system I build, proving that great software is engineered rather than just written.&quot;
-          </p>
-          <div className="about-actions">
-            <a href="#contact" className="about-action-button about-action-primary">
+          <TypewriterText
+            text="I'm a 20-year-old aspiring software engineer driven by a restless curiosity to uncover how systems operate beneath the surface, dissect why things fail, and continuously refine performance."
+          />
+          <TypewriterText
+            text={`"I bring this exact engineering focus, adaptability, and natural curiosity to every system I build, proving that great software is engineered rather than just written."`}
+            className="about-quote"
+            delay={1000}
+          />
+          <motion.div
+            className="about-actions"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.2 }}
+            variants={{ hidden: { opacity: 1 }, visible: { opacity: 1, transition: { staggerChildren: 0.18, delayChildren: 0.2 } } }}
+          >
+            <motion.a
+              href="#contact"
+              className="about-action-button about-action-primary"
+              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } }}
+            >
               <Mail className="h-4 w-4" aria-hidden="true" />
               Get in touch
-            </a>
-            <a href={profile.resumeUrl} className="about-action-button about-action-secondary" download>
+            </motion.a>
+            <motion.a
+              href={profile.resumeUrl}
+              className="about-action-button about-action-secondary"
+              download
+              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } }}
+            >
               <Download className="h-4 w-4" aria-hidden="true" />
               Download resume
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
+  );
+}
+
+function TypewriterText({ text, className, delay = 10 }) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    let timeout;
+    if (isInView) {
+      const interval = Math.max(1, Math.floor(2000 / text.length));
+      let currentIndex = 0;
+      const type = () => {
+        if (currentIndex <= text.length) {
+          setDisplayedText(text.slice(0, currentIndex));
+          currentIndex++;
+          timeout = setTimeout(type, interval);
+        }
+      };
+      timeout = setTimeout(type, delay);
+    } else {
+      setDisplayedText('');
+    }
+    return () => clearTimeout(timeout);
+  }, [isInView, text, delay]);
+
+  return (
+    <motion.p
+      className={className}
+      onViewportEnter={() => setIsInView(true)}
+      onViewportLeave={() => setIsInView(false)}
+      viewport={{ once: false, amount: 0.2 }}
+    >
+      {displayedText}
+      <span className="invisible">{text.slice(displayedText.length)}</span>
+    </motion.p>
   );
 }
 
@@ -203,7 +360,13 @@ function Projects() {
 
   return (
     <section id="projects" className="projects-section px-5 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+      <motion.div
+        className="mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.05 }}
+        variants={revealVariants}
+      >
         <div className="section-heading projects-heading mb-16 max-w-3xl">
           <p className="text-xs font-black uppercase text-accent">Projects</p>
           <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
@@ -212,160 +375,237 @@ function Projects() {
         </div>
 
         <div className="project-showcase-list">
-          {projects.map((project, index) => (
-            <article
-              key={project.title}
-              className={`project-showcase ${index % 2 === 1 ? 'project-showcase-reverse' : ''}`}
-            >
-              <div className="project-media">
-                <div className="project-video-frame" aria-label={`${project.title} project preview`}>
-                  <div className="project-video-screen">
-                    <div className="project-video-topbar">
-                      <div className="video-dots" aria-hidden="true">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-                      <span>{project.title} preview</span>
-                    </div>
+          {projects.map((project, index) => {
+            const isReversed = index % 2 === 1;
 
-                    <div className="project-preview-ui">
-                      <aside className="preview-sidebar">
-                        <span className="preview-logo">{project.title.slice(0, 2)}</span>
-                        <span />
-                        <span />
-                        <span />
-                        <span />
-                      </aside>
+            const mediaVariants = {
+              hidden: { opacity: 0, x: isReversed ? 60 : -60 },
+              visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+            };
 
-                      <div className="preview-main">
-                        <div className="preview-hero-bar">
-                          <div>
-                            <span className="preview-kicker">{project.type}</span>
-                            <strong>{project.title}</strong>
-                          </div>
-                          <span className="preview-status">{project.status}</span>
-                        </div>
+            const copyVariants = {
+              hidden: { opacity: 0, x: isReversed ? -60 : 60 },
+              visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+            };
 
-                        <div className="preview-grid">
-                          <div className="preview-panel preview-panel-large">
-                            <span />
-                            <span />
-                            <span />
-                            <span />
-                          </div>
-                          <div className="preview-panel">
-                            <span />
-                            <span />
-                            <span />
-                          </div>
-                          <div className="preview-panel">
-                            <span />
-                            <span />
-                            <span />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="project-video-control" aria-hidden="true">
-                      <span className="project-play-button">
-                        <Play className="h-4 w-4" />
-                      </span>
-                      <span className="project-video-progress">
-                        <span />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="project-copy">
-                <p className="project-number">{String(index + 1).padStart(2, '0')}</p>
-                <p className="project-type">{project.type}</p>
-                <h3 className="font-display font-black text-white">{project.title}</h3>
-                <p className="project-description">{project.description}</p>
-
-                <div className="project-actions">
-                  <button
-                    type="button"
-                    className="project-explore-button"
+            return (
+              <article
+                key={project.title}
+                className={`project-showcase ${isReversed ? 'project-showcase-reverse' : ''}`}
+              >
+                <motion.div
+                  className="project-media"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.2 }}
+                  variants={mediaVariants}
+                >
+                  <div 
+                    className="project-video-frame cursor-pointer" 
+                    aria-label={`${project.title} project preview`}
                     onClick={() => setSelectedProject(project)}
                   >
-                    Explore full project
-                    <ArrowUpRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
+                    <div className="project-video-screen">
+                      <div className="project-video-topbar">
+                        <div className="video-dots" aria-hidden="true">
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                        <span>{project.title} preview</span>
+                      </div>
 
-      {selectedProject && (
-        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-      )}
+                      <div className="project-preview-ui">
+                        <aside className="preview-sidebar">
+                          <span className="preview-logo">{project.title.slice(0, 2)}</span>
+                          <span />
+                          <span />
+                          <span />
+                          <span />
+                        </aside>
+
+                        <div className="preview-main">
+                          <div className="preview-hero-bar">
+                            <div>
+                              <span className="preview-kicker">{project.type}</span>
+                              <strong>{project.title}</strong>
+                            </div>
+                            <span className="preview-status">{project.status}</span>
+                          </div>
+
+                          <div className="preview-grid">
+                            <div className="preview-panel preview-panel-large">
+                              <span />
+                              <span />
+                              <span />
+                              <span />
+                            </div>
+                            <div className="preview-panel">
+                              <span />
+                              <span />
+                              <span />
+                            </div>
+                            <div className="preview-panel">
+                              <span />
+                              <span />
+                              <span />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="project-video-control" aria-hidden="true">
+                        <span className="project-play-button">
+                          <Play className="h-4 w-4" />
+                        </span>
+                        <span className="project-video-progress">
+                          <span />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  className="project-copy"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.2 }}
+                  variants={copyVariants}
+                >
+                  <p className="project-number">{String(index + 1).padStart(2, '0')}</p>
+                  <p className="project-type">{project.type}</p>
+                  <h3 className="font-display font-black text-white">{project.title}</h3>
+                  <TypewriterText text={project.description} className="project-description" />
+
+                  <div className="project-actions">
+                    <button
+                      type="button"
+                      className="project-explore-button"
+                      onClick={() => setSelectedProject(project)}
+                    >
+                      Explore full project
+                      <ArrowUpRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              </article>
+            );
+          })}
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
 function ProjectModal({ project, onClose }) {
   return (
-    <div className="project-modal-backdrop" role="presentation" onMouseDown={onClose}>
-      <div
-        className="project-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label={`${project.title} project details`}
-        onMouseDown={(event) => event.stopPropagation()}
-      >
-        <button type="button" className="project-modal-close" aria-label="Close project details" onClick={onClose}>
+    <motion.div
+      className="project-modal-backdrop"
+      role="presentation"
+      onMouseDown={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+    >
+      <div className="laptop-container" onMouseDown={(e) => e.stopPropagation()}>
+        {/* Animated Lid */}
+        <motion.div
+          className="laptop-lid"
+          initial={{ rotateX: -90, scale: 0.95 }}
+          animate={{ rotateX: 0, scale: 1 }}
+          exit={{ rotateX: -90, scale: 0.95 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ transformOrigin: "bottom center" }}
+        >
+          <div className="laptop-bezel">
+            <div className="laptop-camera" />
+            
+            <div
+              className="project-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-label={`${project.title} project details`}
+            >
+        {/* Close button */}
+        <button
+          type="button"
+          className="project-modal-close"
+          aria-label="Close project details"
+          onClick={onClose}
+        >
           <X className="h-5 w-5" />
         </button>
 
-        <div className="project-modal-hero">
-          <p>{project.type}</p>
-          <h2 className="font-display font-black text-white">{project.title}</h2>
-          <span>{project.status} / {project.year}</span>
+        {/* Scrollable body */}
+        <div className="project-modal-layout">
+          {/* Header */}
+          <header className="project-modal-header">
+            <h2 className="font-display text-5xl font-black text-white sm:text-6xl flex items-center gap-3">
+              {project.title}
+              <ArrowUpRight className="h-8 w-8 text-white/50" />
+            </h2>
+          </header>
+
+          {/* Details Grid */}
+          <div className="project-modal-details">
+            <section className="project-modal-column">
+              <h3 className="project-modal-col-heading">Description</h3>
+              <p className="project-modal-text">{project.description}</p>
+            </section>
+
+            <section className="project-modal-column">
+              <h3 className="project-modal-col-heading">Technologies</h3>
+              <ul className="project-modal-tech-list">
+                <li>
+                  <strong>Frontend:</strong> {project.stack.slice(0, 3).join(', ')}
+                </li>
+                <li>
+                  <strong>Backend:</strong> {project.stack.slice(3).join(', ') || 'N/A'}
+                </li>
+              </ul>
+            </section>
+          </div>
+
+          {/* Image Placeholder */}
+          <div className="project-modal-image-placeholder">
+            <p className="text-center text-white/20 text-sm">Insert Image Here</p>
+          </div>
         </div>
 
-        <div className="project-modal-body">
-          <section className="project-modal-section project-modal-overview">
-            <h3>Project Overview</h3>
-            <p>{project.description}</p>
-            <p>
-              Add the full project story here later: the problem, users, core workflow, design
-              decisions, important features, challenges, and final outcome.
-            </p>
-          </section>
-
-          <section className="project-modal-section">
-            <h3>Role</h3>
-            <p>{project.role || 'Project role placeholder'}</p>
-          </section>
-
-          <section className="project-modal-section">
-            <h3>Tech Stack</h3>
-            <div className="project-modal-stack">
-              {project.stack.map((item) => (
-                <span key={item} className="tech-pill">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </section>
-
-          <section className="project-modal-section">
-            <h3>Key Features</h3>
-            <ul>
-              <li>Feature detail placeholder</li>
-              <li>Technical implementation placeholder</li>
-              <li>Result or impact placeholder</li>
-            </ul>
-          </section>
+        {/* Footer links */}
+        <div className="project-modal-footer">
+          {project.links?.demo && project.links.demo !== '#' && (
+            <a href={project.links.demo} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-primary">
+              <ArrowUpRight className="h-4 w-4" />
+              Live Demo
+            </a>
+          )}
+          {project.links?.code && project.links.code !== '#' && (
+            <a href={project.links.code} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-secondary">
+              <Github className="h-4 w-4" />
+              View Code
+            </a>
+          )}
         </div>
       </div>
     </div>
+  </motion.div>
+
+        {/* Laptop Base (Keyboard Deck) */}
+        <div className="laptop-base">
+          <div className="laptop-notch-cutout" />
+          <div className="laptop-trackpad" />
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -397,7 +637,13 @@ function Skills() {
 function Contact() {
   return (
     <section id="contact" className="section-screen px-5 lg:px-8">
-      <div className="contact-panel mx-auto max-w-7xl">
+      <motion.div
+        className="contact-panel mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.15 }}
+        variants={revealVariants}
+      >
         <div className="max-w-2xl">
           <p className="text-xs font-black uppercase text-accent">Contact</p>
           <h2 className="mt-4 font-display text-4xl font-black text-white sm:text-5xl">
@@ -425,7 +671,7 @@ function Contact() {
           <GraduationCap className="h-5 w-5 text-accent" />
           {profile.location}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -433,7 +679,13 @@ function Contact() {
 function Section({ id, eyebrow, title, children }) {
   return (
     <section id={id} className="section-screen px-5 lg:px-8">
-      <div className="mx-auto max-w-7xl">
+      <motion.div
+        className="mx-auto max-w-7xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.15 }}
+        variants={revealVariants}
+      >
         <div className="section-heading mb-10 max-w-3xl">
           <p className="text-xs font-black uppercase text-accent">{eyebrow}</p>
           <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
@@ -441,7 +693,7 @@ function Section({ id, eyebrow, title, children }) {
           </h2>
         </div>
         {children}
-      </div>
+      </motion.div>
     </section>
   );
 }
