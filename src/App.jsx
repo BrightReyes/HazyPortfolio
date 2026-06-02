@@ -256,15 +256,17 @@ function Hero() {
     <section className="hero-shell relative min-h-screen px-5 lg:px-8">
       {/* Brand Logo - positioned at the top of hero section so it scrolls away */}
       <motion.div 
-        className="absolute top-5 left-0 right-0 mx-auto max-w-7xl px-5 lg:px-8 z-30 pointer-events-none"
+        className="absolute top-0 left-0 right-0 w-full z-30 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 3.5, duration: 1.5 }}
       >
-        <a href="#home" className="brand-lockup group pointer-events-auto">
-          <span className="brand-dot" />
-          <span className="brand-name font-display font-black text-white">Hazy</span>
-        </a>
+        <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
+          <a href="#home" className="brand-lockup group pointer-events-auto">
+            <span className="brand-dot" />
+            <span className="brand-name font-display font-black text-white">Hazy</span>
+          </a>
+        </div>
       </motion.div>
 
       <motion.div
