@@ -157,10 +157,7 @@ function App() {
         transition={{ delay: 3.5, duration: 1.5 }}
       >
         <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
-          <a href="#home" className="brand-lockup group">
-            <span className="brand-dot" />
-            <span className="brand-name font-display font-black text-white">Hazy</span>
-          </a>
+          <div /> {/* Empty div to maintain grid layout */}
 
           <nav className="desktop-island-nav" aria-label="Primary navigation">
             {navItems.map((item) => (
@@ -172,31 +169,76 @@ function App() {
 
           <button
             aria-expanded={menuOpen}
-            aria-label="Toggle navigation"
+            aria-label="Open navigation"
             className="header-menu-button"
-            onClick={() => setMenuOpen((current) => !current)}
+            onClick={() => setMenuOpen(true)}
           >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <Menu className="h-5 w-5" />
           </button>
         </div>
+      </motion.header>
 
+      <AnimatePresence>
         {menuOpen && (
-          <nav className="floating-menu" aria-label="Collapsed navigation">
-            <div className="floating-menu-inner">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="mobile-nav-link"
+          <>
+            <motion.div
+              className="side-panel-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.div
+              className="side-panel"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="side-panel-header">
+                <button
+                  aria-label="Close menu"
+                  className="side-panel-close"
                   onClick={() => setMenuOpen(false)}
                 >
-                  {item}
-                </a>
-              ))}
-            </div>
-          </nav>
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <nav className="side-panel-nav" aria-label="Mobile navigation">
+                <motion.div 
+                  className="side-panel-links"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+                    hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } }
+                  }}
+                >
+                  {navItems.map((item) => (
+                    <motion.a
+                      key={item}
+                      href={`#${item.toLowerCase()}`}
+                      className="mobile-nav-link hover-glow flex items-center justify-end gap-4 text-3xl sm:text-4xl py-3 font-sans font-bold text-stone-400 transition-all duration-300 group hover:-translate-x-4"
+                      onClick={() => setMenuOpen(false)}
+                      variants={{
+                        hidden: { opacity: 0, x: 40 },
+                        visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+                      }}
+                    >
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-accent">
+                        —
+                      </span>
+                      {item}
+                    </motion.a>
+                  ))}
+                </motion.div>
+              </nav>
+            </motion.div>
+          </>
         )}
-      </motion.header>
+      </AnimatePresence>
 
       <main id="home" className="relative z-10">
         <Hero />
@@ -212,6 +254,19 @@ function App() {
 function Hero() {
   return (
     <section className="hero-shell relative min-h-screen px-5 lg:px-8">
+      {/* Brand Logo - positioned at the top of hero section so it scrolls away */}
+      <motion.div 
+        className="absolute top-5 left-0 right-0 mx-auto max-w-7xl px-5 lg:px-8 z-30 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 3.5, duration: 1.5 }}
+      >
+        <a href="#home" className="brand-lockup group pointer-events-auto">
+          <span className="brand-dot" />
+          <span className="brand-name font-display font-black text-white">Hazy</span>
+        </a>
+      </motion.div>
+
       <motion.div
         className="hero-layout hero-layout-centered mx-auto flex max-w-5xl items-center justify-center"
         initial="hidden"
@@ -747,44 +802,62 @@ function Skills() {
 }
 
 function Contact() {
+  const contactVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <section id="contact" className="section-screen px-5 lg:px-8">
-      <motion.div
-        className="contact-panel mx-auto max-w-7xl"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.15 }}
-        variants={revealVariants}
-      >
-        <div className="max-w-2xl">
-          <p className="text-xs font-black uppercase text-accent">Contact</p>
-          <h2 className="mt-4 font-display text-4xl font-black text-white sm:text-5xl">
-            Let&apos;s build something clean and useful.
-          </h2>
-          <p className="mt-5 leading-8 text-stone-400">
-            Update the email and social links, then use this section for internship applications, capstone demos, or client-ready work.
-          </p>
-        </div>
+    <Section id="contact" eyebrow="Contact" title="Open for Opportunities & Collaborations">
+      <div className="mt-8">
+        <motion.p 
+          className="max-w-2xl leading-8 text-stone-400 text-lg"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.15 }}
+          variants={contactVariants}
+        >
+          I am currently available for new opportunities focused on creating clean, functional software. Please reach out if you want to discuss a potential collaboration, ask a question, or network. I look forward to connecting.
+        </motion.p>
 
-        <div className="mt-10 grid gap-3 md:grid-cols-3">
-          <a href={`mailto:${profile.email}`} className="contact-link">
-            <Mail className="h-5 w-5" />
-            Email Me
-          </a>
-          {profile.socials.slice(0, 2).map((social) => (
-            <a key={social.label} href={social.href} className="contact-link">
-              <ArrowUpRight className="h-5 w-5" />
-              {social.label}
-            </a>
-          ))}
-        </div>
+        <motion.div 
+          className="mt-12 sm:mt-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, amount: 0.15 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } }
+          }}
+        >
+          <motion.div 
+            className="flex flex-wrap items-center gap-4 sm:gap-6"
+            variants={contactVariants}
+          >
+            {profile.socials.map((social) => {
+              const labelLower = social.label.toLowerCase();
+              const Icon = labelLower.includes('github') || labelLower.includes('repo') ? Github 
+                         : labelLower.includes('linkedin') ? Linkedin 
+                         : labelLower.includes('email') ? Mail
+                         : null;
 
-        <div className="mt-8 inline-flex items-center gap-3 text-sm font-bold text-stone-500">
-          <GraduationCap className="h-5 w-5 text-accent" />
-          {profile.location}
-        </div>
-      </motion.div>
-    </section>
+              return (
+                <a key={social.label} href={social.href} className="contact-social-btn group">
+                  {Icon && <Icon className="h-6 w-6" />}
+                  {social.label}
+                  <ArrowUpRight className="h-6 w-6 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </a>
+              );
+            })}
+            
+            <div className="ml-auto inline-flex items-center gap-2 text-sm font-bold text-stone-500 bg-[#101010] px-4 py-2 rounded-full border border-white/5">
+              <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+              Based in {profile.location}
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </Section>
   );
 }
 

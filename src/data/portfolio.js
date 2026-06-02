@@ -4,12 +4,12 @@ export const profile = {
   location: 'Philippines',
   tagline:
     'Designing clean interfaces, reliable systems, and practical software that solves real problems.',
-  email: 'your.email@example.com',
+  email: 'hazybrightreyes@plv.edu.ph',
   resumeUrl: '#',
   socials: [
-    { label: 'GitHub', href: 'https://github.com/yourusername' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/yourusername' },
-    { label: 'Portfolio Repo', href: 'https://github.com/yourusername/portfolio' },
+    { label: 'GitHub', href: 'https://github.com/BrightReyes' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/brightreyes/' },
+    { label: 'Email', href: 'mailto:hazybrightreyes@plv.edu.ph' },
   ],
 };
 
