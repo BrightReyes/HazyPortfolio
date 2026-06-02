@@ -487,53 +487,57 @@ function Projects() {
                         <span>{project.title} preview</span>
                       </div>
 
-                      <div className="project-preview-ui">
-                        <aside className="preview-sidebar">
-                          <span className="preview-logo">{project.title.slice(0, 2)}</span>
-                          <span />
-                          <span />
-                          <span />
-                          <span />
-                        </aside>
-
-                        <div className="preview-main">
-                          <div className="preview-hero-bar">
-                            <div>
-                              <span className="preview-kicker">{project.type}</span>
-                              <strong>{project.title}</strong>
+                      {project.videoUrl ? (
+                        <video 
+                          src={project.videoUrl} 
+                          autoPlay 
+                          loop 
+                          muted 
+                          playsInline 
+                          className="w-full h-full object-cover rounded-sm absolute inset-0 z-0"
+                        />
+                      ) : (
+                        <div className="project-preview-ui">
+                          <aside className="preview-sidebar">
+                            <span className="preview-logo">{project.title.slice(0, 2)}</span>
+                            <span />
+                            <span />
+                            <span />
+                            <span />
+                          </aside>
+  
+                          <div className="preview-main">
+                            <div className="preview-hero-bar">
+                              <div>
+                                <span className="preview-kicker">{project.type}</span>
+                                <strong>{project.title}</strong>
+                              </div>
+                              <span className="preview-status">{project.status}</span>
                             </div>
-                            <span className="preview-status">{project.status}</span>
-                          </div>
-
-                          <div className="preview-grid">
-                            <div className="preview-panel preview-panel-large">
-                              <span />
-                              <span />
-                              <span />
-                              <span />
-                            </div>
-                            <div className="preview-panel">
-                              <span />
-                              <span />
-                              <span />
-                            </div>
-                            <div className="preview-panel">
-                              <span />
-                              <span />
-                              <span />
+  
+                            <div className="preview-grid">
+                              <div className="preview-panel preview-panel-large">
+                                <span />
+                                <span />
+                                <span />
+                                <span />
+                              </div>
+                              <div className="preview-panel">
+                                <span />
+                                <span />
+                                <span />
+                              </div>
+                              <div className="preview-panel">
+                                <span />
+                                <span />
+                                <span />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="project-video-control" aria-hidden="true">
-                        <span className="project-play-button">
-                          <Play className="h-4 w-4" />
-                        </span>
-                        <span className="project-video-progress">
-                          <span />
-                        </span>
-                      </div>
+
                     </div>
                   </div>
                 </motion.div>
@@ -548,7 +552,8 @@ function Projects() {
                   <p className="project-number">{String(index + 1).padStart(2, '0')}</p>
                   <p className="project-type">{project.type}</p>
                   <h3 className="font-display font-black text-white">{project.title}</h3>
-                  <TypewriterText text={project.description} className="project-description" />
+                  <p className="text-sm font-bold text-accent/80 mt-1 mb-2">{project.role}</p>
+                  <TypewriterText text={project.shortDescription || project.description} className="project-description" />
 
                   <div className="project-actions">
                     <button
@@ -629,27 +634,40 @@ function ProjectModal({ project, onClose }) {
           {/* Details Grid */}
           <div className="project-modal-details">
             <section className="project-modal-column">
-              <h3 className="project-modal-col-heading">Description</h3>
+              <h3 className="project-modal-col-heading">Technical Breakdown</h3>
               <p className="project-modal-text">{project.description}</p>
             </section>
 
             <section className="project-modal-column">
               <h3 className="project-modal-col-heading">Technologies</h3>
               <ul className="project-modal-tech-list">
-                <li>
-                  <strong>Frontend:</strong> {project.stack.slice(0, 3).join(', ')}
-                </li>
-                <li>
-                  <strong>Backend:</strong> {project.stack.slice(3).join(', ') || 'N/A'}
-                </li>
+                {project.techList?.map((techGroup) => (
+                  <li key={techGroup.category}>
+                    <strong>{techGroup.category}:</strong> {techGroup.tech}
+                  </li>
+                ))}
               </ul>
             </section>
           </div>
 
-          {/* Image Placeholder */}
-          <div className="project-modal-image-placeholder">
-            <p className="text-center text-white/20 text-sm">Insert Image Here</p>
-          </div>
+          {/* Media Player */}
+          {project.videoUrl ? (
+            <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-black ring-1 ring-white/5 shadow-2xl">
+              <video 
+                src={project.videoUrl} 
+                autoPlay 
+                loop 
+                muted 
+                controls
+                playsInline 
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          ) : (
+            <div className="project-modal-image-placeholder">
+              <p className="text-center text-white/20 text-sm">No Media Available</p>
+            </div>
+          )}
         </div>
 
         {/* Footer links */}

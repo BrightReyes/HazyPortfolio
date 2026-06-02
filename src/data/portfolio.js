@@ -13,97 +13,75 @@ export const profile = {
   ],
 };
 
-export const stats = [
-  { value: '12+', label: 'Projects' },
-  { value: '3', label: 'Core Tracks' },
-  { value: '24/7', label: 'Learning Mode' },
-];
-
-export const focusAreas = [
-  {
-    title: 'Frontend Engineering',
-    description: 'Building responsive React interfaces with clean component structure, polished interaction, and accessible UI patterns.',
-  },
-  {
-    title: 'Backend & APIs',
-    description: 'Designing REST endpoints, authentication flows, database models, and server logic that can grow with the product.',
-  },
-  {
-    title: 'Software Quality',
-    description: 'Writing readable code, debugging carefully, documenting decisions, and improving projects through testing and iteration.',
-  },
-];
 
 export const projects = [
   {
-    title: 'FeasiFy',
-    type: 'AI Business System',
-    role: 'Lead Developer',
+    title: 'ThreatTrack',
+    type: 'CRIME REPORTING SYSTEM',
+    role: 'Fullstack Developer',
+    shortDescription:
+      'A cross-platform mobile app and administrative web dashboard built to synchronize local crime data and emergency SOS alerts with real-time response capabilities.',
     description:
-      'A feasibility analysis platform for organizing business proposals, tracking metrics, and generating AI-assisted insights for decision-making.',
-    stack: ['React', 'Node.js', 'Firebase', 'Tailwind', 'AI APIs'],
+      'The system relies on a high-speed data synchronization framework designed to route simulated emergency alerts to an admin panel in under 2 seconds. The architecture handles secure user authentication pipelines, real-time GPS coordinate streams via Google Maps API integration, and an automated text summarization engine. As fullstack developer, I integrated the Gemini AI processing pipelines to condense raw multi-line incident logs into instant, actionable summaries for system administrators.',
+    techList: [
+      { category: 'Frontend / Mobile', tech: 'React Native, React, Vite, JavaScript, Google Maps API' },
+      { category: 'Backend & Services', tech: 'Firebase (Auth, Firestore, Cloud Messaging), Gemini AI' },
+    ],
     status: 'Featured',
     year: '2026',
-    links: {
-      demo: '#',
-      code: '#',
-    },
+    links: { demo: '#', code: '#' },
+    videoUrl: '/media/ThreatTrack.mov',
   },
   {
-    title: 'ReClaim',
-    type: 'Lost & Found Platform',
-    role: 'Full-Stack Developer',
+    title: 'Road Rumble',
+    type: 'TOP-DOWN ARCADE GAME',
+    role: 'Co-Developer',
+    shortDescription:
+      'A fast-paced, split-screen desktop racing game featuring dynamic obstacle courses, interactive weapons, and concurrent multiplayer matches.',
     description:
-      'A recovery system for reporting lost items, matching claims, managing item records, and helping users track requests through a clean dashboard.',
-    stack: ['React', 'Firebase', 'Cloud Storage', 'Tailwind'],
-    status: 'Live',
-    year: '2026',
-    links: {
-      demo: '#',
-      code: '#',
-    },
-  },
-  {
-    title: 'Bug Tracker Platform',
-    type: 'Engineering Tool',
-    role: 'Software Engineer',
-    description:
-      'A software issue tracker with project boards, ticket priorities, status changes, and role-based workflows for development teams.',
-    stack: ['React', 'Node.js', 'Express', 'MySQL', 'Tailwind'],
+      'The game state operates on highly decoupled structural systems to execute physics calculations, weapon interactions, and lane-switching loops smoothly without frame drops. The visual architecture utilizes independent viewport camera rendering layers to deliver a clean local competitive split-screen experience. Working alongside my co-developer, I engineered the dynamic object spawning framework, configuring it to parse external JSON files to seamlessly scale enemy velocities and obstacle densities in real time.',
+    techList: [
+      { category: 'Engine & Languages', tech: 'Unity, C#' },
+      { category: 'Data & Mechanics', tech: 'PlayerPrefs, JSON' },
+    ],
     status: 'Build',
     year: '2026',
-    links: {
-      demo: '#',
-      code: '#',
-    },
+    links: { demo: '#', code: '#' },
+    videoUrl: '/media/RoadRumble.mov',
   },
   {
-    title: 'API Health Dashboard',
-    type: 'Backend System',
+    title: 'Barangay System',
+    type: 'INVENTORY MANAGEMENT',
     role: 'Backend Developer',
+    shortDescription:
+      'A centralized inventory management and asset booking platform designed to eliminate scheduling conflicts across local municipal barangays.',
     description:
-      'A monitoring dashboard for checking API uptime, response times, endpoint errors, and recent logs in one focused engineering view.',
-    stack: ['JavaScript', 'REST APIs', 'Node.js', 'Firebase'],
+      'The application utilizes a multi-dashboard infrastructure backed by strict role-based access control (RBAC) to ensure total data isolation between different user clearance levels. The core challenge involved mitigating scheduling overlaps during high-volume borrowing requests. I resolved this by designing custom real-time database listeners and calendar-blocking logic that completely eliminates multi-user booking conflicts, paired with automated database stock counters that update precisely upon event completion timestamps.',
+    techList: [
+      { category: 'Frontend', tech: 'HTML5, CSS3, JavaScript, Vite' },
+      { category: 'Backend & Services', tech: 'Firebase (Firestore, Authentication), Vercel' },
+    ],
+    status: 'Live',
+    year: '2026',
+    links: { demo: '#', code: '#' },
+    videoUrl: '/media/Barangay Inventory Management.mp4',
+  },
+  {
+    title: 'Library System',
+    type: 'MACHINE LEARNING PLATFORM',
+    role: 'Backend Developer',
+    shortDescription:
+      'A secure cataloging and circulation system paired with an algorithmic recommendation engine to improve user reading engagement.',
+    description:
+      'The platform features an isolated data access layer built to govern distinct user permission paths for separate student search and librarian management screens. The primary feature is a content-based filtering mechanism that parses text attributes using TF-IDF vectors and Cosine Similarity matrices to generate instant book suggestions. On the backend, I programmed atomic database transaction structures to protect the checkout system, successfully preventing race conditions during simultaneous catalog updates.',
+    techList: [
+      { category: 'Backend & API', tech: 'Python, Django REST Framework, SQLite' },
+      { category: 'Data Science & UI', tech: 'Scikit-learn, Tkinter' },
+    ],
     status: 'Prototype',
     year: '2025',
-    links: {
-      demo: '#',
-      code: '#',
-    },
-  },
-  {
-    title: 'Component System Starter',
-    type: 'Frontend Architecture',
-    role: 'Frontend Engineer',
-    description:
-      'A reusable UI foundation with buttons, forms, layout sections, and data-driven content patterns for faster app development.',
-    stack: ['React', 'Vite', 'Tailwind'],
-    status: 'Live',
-    year: '2025',
-    links: {
-      demo: '#',
-      code: '#',
-    },
+    links: { demo: '#', code: '#' },
+    videoUrl: '/media/Library Management System.mp4',
   },
 ];
 
