@@ -64,7 +64,7 @@ export const projects = [
     status: 'Live',
     year: '2026',
     links: { demo: '#', code: '#' },
-    videoUrl: '/media/Barangay Inventory Management.mp4',
+    videoUrl: '/media/Barangay%20Inventory%20Management.mp4',
   },
   {
     title: 'Library System',
@@ -81,21 +81,27 @@ export const projects = [
     status: 'Prototype',
     year: '2025',
     links: { demo: '#', code: '#' },
-    videoUrl: '/media/Library Management System.mp4',
+    videoUrl: '/media/Library%20Management%20System.mp4',
   },
 ];
 
-export const skills = [
-  {
-    group: 'Frontend Engineering',
-    items: ['React', 'JavaScript', 'HTML5', 'CSS3', 'Tailwind CSS', 'Responsive UI'],
-  },
-  {
-    group: 'Backend Engineering',
-    items: ['Node.js', 'Express', 'MySQL', 'Firebase', 'REST APIs', 'Authentication'],
-  },
-  {
-    group: 'Engineering Workflow',
-    items: ['Git', 'Debugging', 'Testing Basics', 'Code Reviews', 'Documentation'],
-  },
+export const flatSkills = [
+  { name: 'Java', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg' },
+  { name: 'C#', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg' },
+  { name: 'Python', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
+  { name: 'JavaScript', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
+  { name: 'HTML5', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
+  { name: 'CSS3', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg' },
+  { name: 'Spring Boot', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/spring/spring-original.svg' },
+  { name: 'React Native', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+  { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+  { name: 'Unity', icon: 'https://cdn.simpleicons.org/unity/white' },
+  { name: 'Vite', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vitejs/vitejs-original.svg' },
+  { name: 'Firebase', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg' },
+  { name: 'GitHub', icon: 'https://cdn.simpleicons.org/github/white' },
+  { name: 'Git', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg' },
+  { name: 'Vercel', icon: 'https://cdn.simpleicons.org/vercel/white' },
+  { name: 'MySQL', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg' },
+  { name: 'SQLite', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg' },
+  { name: 'JSON', icon: 'https://cdn.simpleicons.org/json/white' },
 ];

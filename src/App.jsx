@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { profile, projects, skills } from './data/portfolio';
+import { profile, projects, flatSkills } from './data/portfolio';
 
 const revealVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -73,7 +73,8 @@ function App() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
-            observer.unobserve(entry.target);
+          } else {
+            entry.target.classList.remove('is-visible');
           }
         });
       },
@@ -134,22 +135,22 @@ function App() {
 
   return (
     <div className="relative min-h-screen overflow-hidden text-stone-100">
-      <motion.div 
-        className="site-grid fixed inset-0 z-0" 
+      <motion.div
+        className="site-grid fixed inset-0 z-0"
         initial={{ clipPath: 'circle(0% at 50% 50%)' }}
         animate={{ clipPath: 'circle(150% at 50% 50%)' }}
         transition={{ delay: 2.5, duration: 2.0, ease: 'easeInOut' }}
       />
-      
+
       {/* Light Burst Shockwave */}
-      <motion.div 
-        className="fixed inset-0 z-0 pointer-events-none bg-white/10" 
+      <motion.div
+        className="fixed inset-0 z-0 pointer-events-none bg-white/10"
         initial={{ clipPath: 'circle(0% at 50% 50%)', opacity: 0 }}
         animate={{ clipPath: 'circle(50% at 50% 50%)', opacity: [0, 0.5, 0] }}
         transition={{ duration: 2.0, delay: 2.5, ease: 'easeOut' }}
       />
 
-      <motion.header 
+      <motion.header
         className={`site-header ${headerScrolled ? 'site-header-scrolled' : ''}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -219,21 +220,21 @@ function Hero() {
         variants={revealVariants}
       >
         <div className="hero-copy-block hero-copy-block-centered">
-          <motion.h1 
+          <motion.h1
             className="hero-title font-display font-black text-white"
-            initial={{ 
-              opacity: 0, 
-              scale: 1.05, 
-              filter: 'blur(8px)', 
-              clipPath: 'inset(0 50% 0 50%)' 
+            initial={{
+              opacity: 0,
+              scale: 1.05,
+              filter: 'blur(8px)',
+              clipPath: 'inset(0 50% 0 50%)'
             }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1, 
-              filter: 'blur(0px)', 
-              clipPath: 'inset(0 0% 0 0%)' 
+            animate={{
+              opacity: 1,
+              scale: 1,
+              filter: 'blur(0px)',
+              clipPath: 'inset(0 0% 0 0%)'
             }}
-            transition={{ 
+            transition={{
               opacity: { delay: 1.5, duration: 0.2 },
               scale: { delay: 1.5, duration: 2.5, ease: 'easeOut' },
               filter: { delay: 1.5, duration: 1.5, ease: 'easeOut' },
@@ -243,11 +244,11 @@ function Hero() {
             <span data-title-text="Software Engineer">Software Engineer</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             className="hero-copy hero-copy-hud mt-7 leading-6"
             initial={{ opacity: 0, y: -15, filter: 'blur(5px)', clipPath: 'inset(0 0 100% 0)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)', clipPath: 'inset(0 0 0% 0)' }}
-            transition={{ 
+            transition={{
               opacity: { delay: 3.0, duration: 0.8 },
               y: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
               filter: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
@@ -260,10 +261,10 @@ function Hero() {
           </motion.p>
         </div>
       </motion.div>
-      
-      <motion.a 
-        href="#about" 
-        className="scroll-cue" 
+
+      <motion.a
+        href="#about"
+        className="scroll-cue"
         aria-label="Scroll to about section"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -273,8 +274,8 @@ function Hero() {
         <span className="scroll-cue-label">scroll down</span>
         <ArrowDown className="scroll-cue-arrow" aria-hidden="true" />
       </motion.a>
-      
-      <motion.div 
+
+      <motion.div
         className="social-dock"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -442,7 +443,7 @@ function Projects() {
         <div className="section-heading projects-heading mb-16 max-w-3xl">
           <p className="text-xs font-black uppercase text-accent">Projects</p>
           <h2 className="mt-4 font-display text-3xl font-black leading-tight text-white sm:text-5xl">
-            Five continuous builds shaped like product demos.
+            Featured Projects
           </h2>
         </div>
 
@@ -472,29 +473,20 @@ function Projects() {
                   viewport={{ once: false, amount: 0.2 }}
                   variants={mediaVariants}
                 >
-                  <div 
-                    className="project-video-frame cursor-pointer" 
+                  <div
+                    className="project-video-frame cursor-pointer"
                     aria-label={`${project.title} project preview`}
                     onClick={() => setSelectedProject(project)}
                   >
                     <div className="project-video-screen">
-                      <div className="project-video-topbar">
-                        <div className="video-dots" aria-hidden="true">
-                          <span />
-                          <span />
-                          <span />
-                        </div>
-                        <span>{project.title} preview</span>
-                      </div>
-
                       {project.videoUrl ? (
-                        <video 
-                          src={project.videoUrl} 
-                          autoPlay 
-                          loop 
-                          muted 
-                          playsInline 
-                          className="w-full h-full object-cover rounded-sm absolute inset-0 z-0"
+                        <video
+                          src={project.videoUrl}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <div className="project-preview-ui">
@@ -505,7 +497,7 @@ function Projects() {
                             <span />
                             <span />
                           </aside>
-  
+
                           <div className="preview-main">
                             <div className="preview-hero-bar">
                               <div>
@@ -514,7 +506,7 @@ function Projects() {
                               </div>
                               <span className="preview-status">{project.status}</span>
                             </div>
-  
+
                             <div className="preview-grid">
                               <div className="preview-panel preview-panel-large">
                                 <span />
@@ -604,90 +596,90 @@ function ProjectModal({ project, onClose }) {
         >
           <div className="laptop-bezel">
             <div className="laptop-camera" />
-            
+
             <div
               className="project-modal"
               role="dialog"
               aria-modal="true"
               aria-label={`${project.title} project details`}
             >
-        {/* Close button */}
-        <button
-          type="button"
-          className="project-modal-close"
-          aria-label="Close project details"
-          onClick={onClose}
-        >
-          <X className="h-5 w-5" />
-        </button>
+              {/* Close button */}
+              <button
+                type="button"
+                className="project-modal-close"
+                aria-label="Close project details"
+                onClick={onClose}
+              >
+                <X className="h-5 w-5" />
+              </button>
 
-        {/* Scrollable body */}
-        <div className="project-modal-layout">
-          {/* Header */}
-          <header className="project-modal-header">
-            <h2 className="font-display text-5xl font-black text-white sm:text-6xl flex items-center gap-3">
-              {project.title}
-              <ArrowUpRight className="h-8 w-8 text-white/50" />
-            </h2>
-          </header>
+              {/* Scrollable body */}
+              <div className="project-modal-layout">
+                {/* Header */}
+                <header className="project-modal-header">
+                  <h2 className="font-display text-5xl font-black text-white sm:text-6xl flex items-center gap-3">
+                    {project.title}
+                    <ArrowUpRight className="h-8 w-8 text-white/50" />
+                  </h2>
+                </header>
 
-          {/* Details Grid */}
-          <div className="project-modal-details">
-            <section className="project-modal-column">
-              <h3 className="project-modal-col-heading">Technical Breakdown</h3>
-              <p className="project-modal-text">{project.description}</p>
-            </section>
+                {/* Details Grid */}
+                <div className="project-modal-details">
+                  <section className="project-modal-column">
+                    <h3 className="project-modal-col-heading">Technical Breakdown</h3>
+                    <p className="project-modal-text">{project.description}</p>
+                  </section>
 
-            <section className="project-modal-column">
-              <h3 className="project-modal-col-heading">Technologies</h3>
-              <ul className="project-modal-tech-list">
-                {project.techList?.map((techGroup) => (
-                  <li key={techGroup.category}>
-                    <strong>{techGroup.category}:</strong> {techGroup.tech}
-                  </li>
-                ))}
-              </ul>
-            </section>
+                  <section className="project-modal-column">
+                    <h3 className="project-modal-col-heading">Technologies</h3>
+                    <ul className="project-modal-tech-list">
+                      {project.techList?.map((techGroup) => (
+                        <li key={techGroup.category}>
+                          <strong>{techGroup.category}:</strong> {techGroup.tech}
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                </div>
+
+                {/* Media Player */}
+                {project.videoUrl ? (
+                  <div className="mt-8 aspect-video w-full overflow-hidden rounded-xl border border-white/10 bg-black ring-1 ring-white/5 shadow-2xl relative">
+                    <video
+                      src={project.videoUrl}
+                      autoPlay
+                      loop
+                      muted
+                      controls
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="project-modal-image-placeholder">
+                    <p className="text-center text-white/20 text-sm">No Media Available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer links */}
+              <div className="project-modal-footer">
+                {project.links?.demo && project.links.demo !== '#' && (
+                  <a href={project.links.demo} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-primary">
+                    <ArrowUpRight className="h-4 w-4" />
+                    Live Demo
+                  </a>
+                )}
+                {project.links?.code && project.links.code !== '#' && (
+                  <a href={project.links.code} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-secondary">
+                    <Github className="h-4 w-4" />
+                    View Code
+                  </a>
+                )}
+              </div>
+            </div>
           </div>
-
-          {/* Media Player */}
-          {project.videoUrl ? (
-            <div className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-black ring-1 ring-white/5 shadow-2xl">
-              <video 
-                src={project.videoUrl} 
-                autoPlay 
-                loop 
-                muted 
-                controls
-                playsInline 
-                className="w-full h-auto object-cover"
-              />
-            </div>
-          ) : (
-            <div className="project-modal-image-placeholder">
-              <p className="text-center text-white/20 text-sm">No Media Available</p>
-            </div>
-          )}
-        </div>
-
-        {/* Footer links */}
-        <div className="project-modal-footer">
-          {project.links?.demo && project.links.demo !== '#' && (
-            <a href={project.links.demo} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-primary">
-              <ArrowUpRight className="h-4 w-4" />
-              Live Demo
-            </a>
-          )}
-          {project.links?.code && project.links.code !== '#' && (
-            <a href={project.links.code} target="_blank" rel="noreferrer" className="modal-link-btn modal-link-secondary">
-              <Github className="h-4 w-4" />
-              View Code
-            </a>
-          )}
-        </div>
-      </div>
-    </div>
-  </motion.div>
+        </motion.div>
 
         {/* Laptop Base (Keyboard Deck) */}
         <div className="laptop-base">
@@ -699,31 +691,56 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
+const skillAnimation = {
+  animate: (i) => ({
+    y: [0, -10, 0],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut",
+      delay: i * 0.15,
+    },
+  }),
+};
+
 function Skills() {
   return (
-    <Section id="skills" eyebrow="Skills" title="A focused engineering stack for building reliable applications.">
-      <div className="timeline-panel">
-        {skills.map((skillGroup, index) => (
-          <article
-            key={skillGroup.group}
-            className="timeline-row"
-            data-reveal="fade-up"
-            style={{ '--reveal-delay': `${index * 80}ms` }}
-          >
-            <div className="timeline-index">{String(index + 1).padStart(2, '0')}</div>
-            <div>
-              <p className="text-sm font-black uppercase text-accent">Core Skill</p>
-              <h3 className="mt-2 font-display text-2xl font-black text-white">{skillGroup.group}</h3>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {skillGroup.items.map((item) => (
-                  <span key={item} className="tech-pill">
-                    {item}
-                  </span>
-                ))}
+    <Section id="skills" eyebrow="Skills" title="Development Stack & Tools">
+      <div className="skills-formation-container mt-16 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-4xl mx-auto py-8">
+        {(() => {
+          const rows = [3, 4, 4, 4, 3];
+          let currentIndex = 0;
+          return rows.map((rowCount, rowIndex) => {
+            const rowSkills = flatSkills.slice(currentIndex, currentIndex + rowCount);
+            currentIndex += rowCount;
+
+            return (
+              <div key={rowIndex} className="flex flex-wrap justify-center gap-3 sm:gap-5 w-full">
+                {rowSkills.map((skill, index) => {
+                  const globalIndex = currentIndex - rowCount + index;
+                  return (
+                    <div
+                      key={skill.name}
+                      data-reveal="fade-up"
+                      style={{ '--reveal-delay': `${globalIndex * 50}ms` }}
+                    >
+                      <motion.div
+                        custom={globalIndex}
+                        variants={skillAnimation}
+                        animate="animate"
+                        whileHover={{ scale: 1.1 }}
+                        className="skill-pill-formation flex items-center gap-3 sm:gap-4 cursor-default"
+                      >
+                        <img src={skill.icon} alt={skill.name} className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-md" />
+                        <span className="font-bold text-base sm:text-lg text-white tracking-wide whitespace-nowrap">{skill.name}</span>
+                      </motion.div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
-          </article>
-        ))}
+            );
+          });
+        })()}
       </div>
     </Section>
   );
