@@ -5,7 +5,7 @@ export const profile = {
   tagline:
     'Designing clean interfaces, reliable systems, and practical software that solves real problems.',
   email: 'hazybrightreyes@plv.edu.ph',
-  resumeUrl: '#',
+  resumeUrl: '/REYES,HAZYBRIGHT_RESUME.pdf',
   socials: [
     { label: 'GitHub', href: 'https://github.com/BrightReyes' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/brightreyes/' },
@@ -105,3 +105,38 @@ export const flatSkills = [
   { name: 'SQLite', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg' },
   { name: 'JSON', icon: 'https://cdn.simpleicons.org/json/white' },
 ];
+
+export const education = [
+  {
+    degree: 'Bachelor of Science in Information Technology',
+    school: 'Pamantasan ng Lungsod ng Valenzuela',
+    period: '2022 — Present',
+    description:
+      'Focused on software engineering, systems development, and data-driven applications. Active contributor to academic projects spanning mobile development, web platforms, and machine learning.',
+  },
+];
+
+export const experience = [
+  {
+    role: 'Fullstack Developer',
+    company: 'ThreatTrack — Capstone Project',
+    period: '2026',
+    description:
+      'Designed and built a cross-platform crime reporting system with real-time GPS tracking, Gemini AI summarization, and Firebase push notifications.',
+  },
+  {
+    role: 'Backend Developer',
+    company: 'Barangay Inventory System',
+    period: '2026',
+    description:
+      'Engineered role-based access control, real-time calendar-blocking logic, and automated stock counters for a municipal inventory management platform.',
+  },
+  {
+    role: 'Backend Developer',
+    company: 'Library Management System',
+    period: '2025',
+    description:
+      'Built a recommendation engine using TF-IDF and Cosine Similarity with Django REST Framework, plus atomic transaction structures for concurrent catalog updates.',
+  },
+];
+

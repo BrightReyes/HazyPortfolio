@@ -1,18 +1,24 @@
 import {
   ArrowDown,
+  ArrowUp,
   ArrowUpRight,
+  ChevronRight,
   Download,
   Github,
-  GraduationCap,
   Linkedin,
   Mail,
+  MapPin,
   Menu,
   Play,
+  Send,
   X,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { profile, projects, flatSkills } from './data/portfolio';
+import ScrollReveal from './ScrollReveal';
+import StaggeredMenu from './StaggeredMenu';
+import ScrollFloat from './ScrollFloat';
 
 const revealVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -46,6 +52,7 @@ const heroSocials = [
 ];
 
 function App() {
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
 
@@ -58,6 +65,15 @@ function App() {
     window.addEventListener('scroll', updateHeader, { passive: true });
 
     return () => window.removeEventListener('scroll', updateHeader);
+  }, []);
+
+  // Back-to-top visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > window.innerHeight);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -93,161 +109,153 @@ function App() {
     const root = document.documentElement;
     let frameId = 0;
 
-    const updateParallax = () => {
-      frameId = 0;
-      const viewportCenter = window.innerHeight / 2;
-
-      root.style.setProperty('--bg-shift', `${window.scrollY * -0.035}px`);
-
-      document.querySelectorAll('[data-parallax]').forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        const speed = Number(element.getAttribute('data-parallax-speed') || -28);
-        const distance = (rect.top + rect.height / 2 - viewportCenter) / window.innerHeight;
-        element.style.setProperty('--parallax-y', `${distance * speed}px`);
+    const updatePointer = (event) => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(() => {
+        root.style.setProperty('--mouse-x', `${event.clientX}px`);
+        root.style.setProperty('--mouse-y', `${event.clientY}px`);
       });
     };
 
-    const requestParallax = () => {
-      if (!frameId) {
-        frameId = window.requestAnimationFrame(updateParallax);
-      }
-    };
-
-    const updatePointer = (event) => {
-      root.style.setProperty('--mouse-x', `${event.clientX}px`);
-      root.style.setProperty('--mouse-y', `${event.clientY}px`);
-    };
-
-    updateParallax();
-    window.addEventListener('scroll', requestParallax, { passive: true });
-    window.addEventListener('resize', requestParallax);
     window.addEventListener('pointermove', updatePointer, { passive: true });
 
     return () => {
-      if (frameId) {
-        window.cancelAnimationFrame(frameId);
-      }
-      window.removeEventListener('scroll', requestParallax);
-      window.removeEventListener('resize', requestParallax);
+      if (frameId) window.cancelAnimationFrame(frameId);
       window.removeEventListener('pointermove', updatePointer);
     };
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-stone-100">
-      <motion.div
-        className="site-grid fixed inset-0 z-0"
-        initial={{ clipPath: 'circle(0% at 50% 50%)' }}
-        animate={{ clipPath: 'circle(150% at 50% 50%)' }}
-        transition={{ delay: 2.5, duration: 2.0, ease: 'easeInOut' }}
-      />
+    <>
+      {/* Skip link for accessibility */}
+      <a href="#home" className="skip-link">
+        Skip to main content
+      </a>
 
-      {/* Light Burst Shockwave */}
-      <motion.div
-        className="fixed inset-0 z-0 pointer-events-none bg-white/10"
-        initial={{ clipPath: 'circle(0% at 50% 50%)', opacity: 0 }}
-        animate={{ clipPath: 'circle(50% at 50% 50%)', opacity: [0, 0.5, 0] }}
-        transition={{ duration: 2.0, delay: 2.5, ease: 'easeOut' }}
-      />
+      <div className="relative min-h-screen overflow-hidden text-stone-100">
+        <motion.div
+          className="site-grid fixed inset-0 z-0"
+          initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+          animate={{ clipPath: 'circle(150% at 50% 50%)' }}
+          transition={{ delay: 2, duration: 2.0, ease: 'easeInOut' }}
+        />
 
-      <motion.header
-        className={`site-header ${headerScrolled ? 'site-header-scrolled' : ''}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3.5, duration: 1.5 }}
-      >
-        <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
-          <div /> {/* Empty div to maintain grid layout */}
+        {/* Light Burst Shockwave */}
+        <motion.div
+          className="fixed inset-0 z-0 pointer-events-none bg-white/10"
+          initial={{ clipPath: 'circle(0% at 50% 50%)', opacity: 0 }}
+          animate={{ clipPath: 'circle(50% at 50% 50%)', opacity: [0, 0.5, 0] }}
+          transition={{ duration: 2.0, delay: 1, ease: 'easeOut' }}
+        />
 
-          <nav className="desktop-island-nav" aria-label="Primary navigation">
-            {navItems.map((item) => (
-              <a key={item} href={`#${item.toLowerCase()}`} className="nav-link">
-                {item}
-              </a>
-            ))}
-          </nav>
+        {/* Fixed header with pill nav + scroll-aware burger */}
+        <motion.header
+          className={`site-header ${headerScrolled ? 'site-header-scrolled' : ''}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.5, duration: 1.5 }}
+        >
+          <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
+            <div /> {/* Empty div to maintain grid layout */}
 
-          <button
-            aria-expanded={menuOpen}
-            aria-label="Open navigation"
-            className="header-menu-button"
-            onClick={() => setMenuOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-      </motion.header>
+            <nav className="desktop-island-nav" aria-label="Primary navigation">
+              {navItems.map((item) => (
+                <a key={item} href={`#${item.toLowerCase()}`} className="nav-link">
+                  {item}
+                </a>
+              ))}
+            </nav>
 
-      <AnimatePresence>
-        {menuOpen && (
-          <>
-            <motion.div
-              className="side-panel-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setMenuOpen(false)}
-            />
-            <motion.div
-              className="side-panel"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            <button
+              aria-expanded={menuOpen}
+              aria-label="Open navigation"
+              className="header-menu-button"
+              onClick={() => setMenuOpen(true)}
             >
-              <div className="side-panel-header">
-                <button
-                  aria-label="Close menu"
-                  className="side-panel-close"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-              <nav className="side-panel-nav" aria-label="Mobile navigation">
-                <motion.div 
-                  className="side-panel-links"
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={{
-                    visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-                    hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } }
-                  }}
-                >
-                  {navItems.map((item) => (
-                    <motion.a
-                      key={item}
-                      href={`#${item.toLowerCase()}`}
-                      className="mobile-nav-link hover-glow flex items-center justify-end gap-4 text-3xl sm:text-4xl py-3 font-sans font-bold text-stone-400 transition-all duration-300 group hover:-translate-x-4"
-                      onClick={() => setMenuOpen(false)}
-                      variants={{
-                        hidden: { opacity: 0, x: 40 },
-                        visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
-                      }}
-                    >
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-accent">
-                        —
-                      </span>
-                      {item}
-                    </motion.a>
-                  ))}
-                </motion.div>
-              </nav>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
+        </motion.header>
 
-      <main id="home" className="relative z-10">
-        <Hero />
-        <About />
-        <Projects />
-        <Skills />
-        <Contact />
-      </main>
-    </div>
+        {/* Side panel mobile menu */}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              <motion.div
+                className="side-panel-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setMenuOpen(false)}
+              />
+              <motion.div
+                className="side-panel"
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="side-panel-header">
+                  <button
+                    aria-label="Close menu"
+                    className="side-panel-close"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+                <nav className="side-panel-nav" aria-label="Mobile navigation">
+                  <motion.div
+                    className="side-panel-links"
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    variants={{
+                      visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+                      hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } }
+                    }}
+                  >
+                    {navItems.map((item) => (
+                      <motion.a
+                        key={item}
+                        href={`#${item.toLowerCase()}`}
+                        className="mobile-nav-link hover-glow flex items-center justify-end gap-4 text-3xl sm:text-4xl py-3 font-sans font-bold text-stone-400 transition-all duration-300 group hover:-translate-x-4"
+                        onClick={() => setMenuOpen(false)}
+                        variants={{
+                          hidden: { opacity: 0, x: 40 },
+                          visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+                        }}
+                      >
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-accent">
+                          —
+                        </span>
+                        {item}
+                      </motion.a>
+                    ))}
+                  </motion.div>
+                </nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        <main id="home" className="relative z-10">
+          <Hero />
+          <About />
+          <Projects />
+          <Skills />
+          <Contact />
+        </main>
+
+        <Footer />
+
+        {/* Back to Top */}
+        <AnimatePresence>
+          {showBackToTop && <BackToTop />}
+        </AnimatePresence>
+      </div>
+    </>
   );
 }
 
@@ -255,11 +263,11 @@ function Hero() {
   return (
     <section className="hero-shell relative min-h-screen px-5 lg:px-8">
       {/* Brand Logo - positioned at the top of hero section so it scrolls away */}
-      <motion.div 
+      <motion.div
         className="absolute top-0 left-0 right-0 w-full z-30 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 3.5, duration: 1.5 }}
+        transition={{ delay: 2.5, duration: 1.5 }}
       >
         <div className="header-shell mx-auto max-w-7xl px-5 py-5 lg:px-8">
           <a href="#home" className="brand-lockup group pointer-events-auto">
@@ -292,10 +300,10 @@ function Hero() {
               clipPath: 'inset(0 0% 0 0%)'
             }}
             transition={{
-              opacity: { delay: 1.5, duration: 0.2 },
-              scale: { delay: 1.5, duration: 2.5, ease: 'easeOut' },
-              filter: { delay: 1.5, duration: 1.5, ease: 'easeOut' },
-              clipPath: { delay: 1.5, duration: 1.0, ease: 'easeInOut' }
+              opacity: { delay: 1.2, duration: 0.2 },
+              scale: { delay: 1.2, duration: 2.5, ease: 'easeOut' },
+              filter: { delay: 1.2, duration: 1.5, ease: 'easeOut' },
+              clipPath: { delay: 1.2, duration: 1.0, ease: 'easeInOut' }
             }}
           >
             <span data-title-text="Software Engineer">Software Engineer</span>
@@ -306,10 +314,10 @@ function Hero() {
             initial={{ opacity: 0, y: -15, filter: 'blur(5px)', clipPath: 'inset(0 0 100% 0)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)', clipPath: 'inset(0 0 0% 0)' }}
             transition={{
-              opacity: { delay: 3.0, duration: 0.8 },
-              y: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
-              filter: { delay: 3.0, duration: 1.5, ease: 'easeOut' },
-              clipPath: { delay: 3.0, duration: 2.0, ease: 'easeInOut' }
+              opacity: { delay: 1.5, duration: 0.8 },
+              y: { delay: 1.5, duration: 1.5, ease: 'easeOut' },
+              filter: { delay: 1.5, duration: 1.5, ease: 'easeOut' },
+              clipPath: { delay: 1.5, duration: 2.0, ease: 'easeInOut' }
             }}
           >
             <span className="hud-corner hud-corner-tl" aria-hidden="true" />
@@ -325,7 +333,7 @@ function Hero() {
         aria-label="Scroll to about section"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 3.5, duration: 1.0 }}
+        transition={{ delay: 2.5, duration: 1.0 }}
       >
         <span className="scroll-cue-dot" aria-hidden="true" />
         <span className="scroll-cue-label">scroll down</span>
@@ -336,7 +344,7 @@ function Hero() {
         className="social-dock"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 3.2, duration: 1.0 }}
+        transition={{ delay: 2.2, duration: 1.0 }}
       >
         {heroSocials.map(({ label, href, Icon }) => (
           <a key={label} href={href} aria-label={label} title={label}>
@@ -389,14 +397,27 @@ function About() {
         </div>
 
         <div className="about-copy-block">
-          <TypewriterText
-            text="I'm a 20-year-old aspiring software engineer driven by a restless curiosity to uncover how systems operate beneath the surface, dissect why things fail, and continuously refine performance."
-          />
-          <TypewriterText
-            text={`"I bring this exact engineering focus, adaptability, and natural curiosity to every system I build, proving that great software is engineered rather than just written."`}
-            className="about-quote"
-            delay={1000}
-          />
+          <ScrollFloat
+            animationDuration={0.8}
+            ease='power3.out'
+            scrollStart='top bottom-=10%'
+            scrollEnd='center center+=20%'
+            stagger={0.015}
+            textClassName="text-stone-300 font-sans text-lg sm:text-xl md:text-2xl leading-relaxed"
+          >
+            I'm a 20-year-old aspiring software engineer driven by a restless curiosity to uncover how systems operate beneath the surface, dissect why things fail, and continuously refine performance.
+          </ScrollFloat>
+          <ScrollFloat
+            containerClassName="mt-8 about-quote"
+            animationDuration={0.8}
+            ease='power3.out'
+            scrollStart='top bottom-=10%'
+            scrollEnd='center center+=20%'
+            stagger={0.015}
+            textClassName="text-stone-300 font-sans text-lg sm:text-xl md:text-2xl leading-relaxed italic"
+          >
+            I bring this exact engineering focus, adaptability, and natural curiosity to every system I build, proving that great software is engineered rather than just written.
+          </ScrollFloat>
           <motion.div
             className="about-actions"
             initial="hidden"
@@ -804,62 +825,218 @@ function Skills() {
 }
 
 function Contact() {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formStatus, setFormStatus] = useState('idle'); // idle | sending | sent | error
   const contactVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus('sending');
+    try {
+      const res = await fetch('https://formspree.io/f/xqaqjbyl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        setFormStatus('sent');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setFormStatus('idle'), 4000);
+      } else {
+        setFormStatus('error');
+        setTimeout(() => setFormStatus('idle'), 4000);
+      }
+    } catch {
+      setFormStatus('error');
+      setTimeout(() => setFormStatus('idle'), 4000);
+    }
+  };
+
   return (
     <Section id="contact" eyebrow="Contact" title="Open for Opportunities & Collaborations">
-      <div className="mt-8">
-        <motion.p 
-          className="max-w-2xl leading-8 text-stone-400 text-lg"
+      <div className="contact-grid mt-12">
+        {/* Left — Form */}
+        <motion.form
+          className="contact-form"
+          onSubmit={handleSubmit}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.15 }}
-          variants={contactVariants}
+          viewport={{ once: false, amount: 0.1 }}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } }
+          }}
         >
-          I am currently available for new opportunities focused on creating clean, functional software. Please reach out if you want to discuss a potential collaboration, ask a question, or network. I look forward to connecting.
-        </motion.p>
+          <motion.div className="contact-form-field" variants={contactVariants}>
+            <label htmlFor="contact-name">Name</label>
+            <input
+              id="contact-name"
+              type="text"
+              placeholder="Your name"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+            />
+          </motion.div>
+          <motion.div className="contact-form-field" variants={contactVariants}>
+            <label htmlFor="contact-email">Email</label>
+            <input
+              id="contact-email"
+              type="email"
+              placeholder="your@email.com"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+            />
+          </motion.div>
+          <motion.div className="contact-form-field" variants={contactVariants}>
+            <label htmlFor="contact-message">Message</label>
+            <textarea
+              id="contact-message"
+              placeholder="Tell me about your project or opportunity…"
+              rows={5}
+              required
+              value={formData.message}
+              onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+            />
+          </motion.div>
+          <motion.button
+            type="submit"
+            className="contact-submit-btn"
+            disabled={formStatus === 'sending'}
+            variants={contactVariants}
+          >
+            {formStatus === 'sending' ? (
+              'Sending…'
+            ) : formStatus === 'sent' ? (
+              'Message sent ✓'
+            ) : formStatus === 'error' ? (
+              'Failed — try again'
+            ) : (
+              <>
+                <Send className="h-4 w-4" />
+                Send Message
+              </>
+            )}
+          </motion.button>
+        </motion.form>
 
-        <motion.div 
-          className="mt-12 sm:mt-16"
+        {/* Right — Socials + Info */}
+        <motion.div
+          className="contact-info"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.15 }}
           variants={{
             hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } }
+            visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.2 } }
           }}
         >
-          <motion.div 
-            className="flex flex-wrap items-center gap-4 sm:gap-6"
+          <motion.p
+            className="max-w-md leading-8 text-stone-400 text-lg mb-8"
             variants={contactVariants}
           >
+            I am currently available for new opportunities focused on creating clean, functional software. Reach out to discuss a collaboration or just connect.
+          </motion.p>
+
+          <motion.div className="contact-links-stack" variants={contactVariants}>
             {profile.socials.map((social) => {
               const labelLower = social.label.toLowerCase();
-              const Icon = labelLower.includes('github') || labelLower.includes('repo') ? Github 
-                         : labelLower.includes('linkedin') ? Linkedin 
-                         : labelLower.includes('email') ? Mail
-                         : null;
+              const Icon = labelLower.includes('github') || labelLower.includes('repo') ? Github
+                : labelLower.includes('linkedin') ? Linkedin
+                  : labelLower.includes('email') ? Mail
+                    : null;
 
               return (
                 <a key={social.label} href={social.href} className="contact-social-btn group">
-                  {Icon && <Icon className="h-6 w-6" />}
+                  {Icon && <Icon className="h-5 w-5" />}
                   {social.label}
-                  <ArrowUpRight className="h-6 w-6 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                  <ArrowUpRight className="h-5 w-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                 </a>
               );
             })}
-            
-            <div className="ml-auto inline-flex items-center gap-2 text-sm font-bold text-stone-500 bg-[#101010] px-4 py-2 rounded-full border border-white/5">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-              Based in {profile.location}
-            </div>
+          </motion.div>
+
+          <motion.div
+            className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-stone-500 bg-[#101010] px-4 py-2 rounded-full border border-white/5"
+            variants={contactVariants}
+          >
+            <MapPin className="w-3.5 h-3.5" />
+            Based in {profile.location}
           </motion.div>
         </motion.div>
       </div>
     </Section>
+  );
+}
+
+
+
+function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="site-footer relative z-10">
+      <div className="footer-inner mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="footer-top">
+          <div className="footer-brand">
+            <span className="brand-name font-display font-black text-white text-xl">Hazy</span>
+            <p className="footer-tagline">{profile.tagline}</p>
+          </div>
+
+          <nav className="footer-nav" aria-label="Footer navigation">
+            {navItems.map((item) => (
+              <a key={item} href={`#${item.toLowerCase()}`} className="footer-nav-link">
+                {item}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div className="footer-divider" />
+
+        <div className="footer-bottom">
+          <p className="footer-copyright">
+            © {currentYear} Hazy Bright P. Reyes. All rights reserved.
+          </p>
+          <div className="footer-socials">
+            {profile.socials.map((social) => {
+              const labelLower = social.label.toLowerCase();
+              const Icon = labelLower.includes('github') ? Github
+                : labelLower.includes('linkedin') ? Linkedin
+                  : labelLower.includes('email') ? Mail
+                    : null;
+              return (
+                <a key={social.label} href={social.href} className="footer-social-icon" aria-label={social.label}>
+                  {Icon && <Icon className="h-4 w-4" />}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function BackToTop() {
+  return (
+    <motion.button
+      className="back-to-top"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Back to top"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <ArrowUp className="h-5 w-5" />
+    </motion.button>
   );
 }
 
@@ -886,3 +1063,4 @@ function Section({ id, eyebrow, title, children }) {
 }
 
 export default App;
+
